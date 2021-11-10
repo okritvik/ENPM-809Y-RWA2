@@ -322,11 +322,12 @@ bool rwa2::Mouse::turn_back(){
 //NEWLY WRITTEN FUNCTION
 
 bool rwa2::Mouse::search_maze(){
-    if(m_x != 7 || m_y != 7){
+    if(m_x != 8 || m_y != 7){
         if(node_stack.empty()){
             // curr_node.at(0) = m_x;
             // curr_node.at(1) = m_y;
             node_stack.push(curr_node);
+            API::setColor(node_stack.top().at(0),node_stack.top().at(1),'g');
             std::cerr << "Pushed to stack: " << curr_node.at(0) <<", " << curr_node.at(1) << "\n";
             (visited_nodes.at(m_y)).at(m_x) = 1;
         }
@@ -335,41 +336,53 @@ bool rwa2::Mouse::search_maze(){
         return true;
     }
     if((!API::wallFront()) && (update_next_node(m_direction,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
+        update_walls(node_stack,m_direction);
         node_stack.push(next_node);
+        API::setColor(node_stack.top().at(0),node_stack.top().at(1),'g');
         (visited_nodes.at(next_node.at(1))).at(next_node.at(0)) = 1;
         // curr_node.at(0) = next_node.at(0);
         // curr_node.at(1) = next_node.at(1);
         // m_x = curr_node.at(0);
         // m_y = curr_node.at(1);
+        
         move_forward();
     }
     else if((!API::wallRight()) && (update_next_node((m_direction+1)%4,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
+        update_walls(node_stack,m_direction);
         node_stack.push(next_node);
+        API::setColor(node_stack.top().at(0),node_stack.top().at(1),'g');
         (visited_nodes.at(next_node.at(1))).at(next_node.at(0)) = 1;
         // curr_node.at(0) = next_node.at(0);
         // curr_node.at(1) = next_node.at(1);
         // m_x = curr_node.at(0);
         // m_y = curr_node.at(1);
+        
         turn_right();
         move_forward();
     }
-    else if((turn_back()) && (!API::wallFront()) && (update_next_node(m_direction,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
+    else if((!API::wallLeft()) && (update_next_node((m_direction+3)%4,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
+        update_walls(node_stack,m_direction);
         node_stack.push(next_node);
+        API::setColor(node_stack.top().at(0),node_stack.top().at(1),'g');
         (visited_nodes.at(next_node.at(1))).at(next_node.at(0)) = 1;
-        // curr_node.at(0) = next_node.at(0);
-        // curr_node.at(1) = next_node.at(1);
-        // m_x = curr_node.at(0);
-        // m_y = curr_node.at(1);
+        turn_left();
         move_forward();
     }
-    else if((!API::wallRight()) && (update_next_node((m_direction+1)%4,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
-        node_stack.push(next_node);
-        (visited_nodes.at(next_node.at(1))).at(next_node.at(0)) = 1;
-        turn_right();
-        move_forward();
-    }
+    // else if((turn_back()) && (!API::wallFront()) && (update_next_node((m_direction+2)%4,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
+    //     node_stack.push(next_node);
+    //     (visited_nodes.at(next_node.at(1))).at(next_node.at(0)) = 1;
+    //     // curr_node.at(0) = next_node.at(0);
+    //     // curr_node.at(1) = next_node.at(1);
+    //     // m_x = curr_node.at(0);
+    //     // m_y = curr_node.at(1);
+    //     move_forward();
+    // }
+    
     else{
         if(!node_stack.empty()){
+            API::setColor(node_stack.top().at(0),node_stack.top().at(1),'a');
+            update_walls(node_stack,m_direction);
+            std::cerr << "Popped from stack: "<<node_stack.top().at(0)<<", "<<node_stack.top().at(1) << "\n";
             node_stack.pop();
             top_node = node_stack.top();
             move_to_prev_node(top_node,curr_node,m_direction);
@@ -554,4 +567,54 @@ void move_to_prev_node(const std::array<int,2>& top_node,const std::array<int,2>
             m_direction = (m_direction+3)%4;
         }
     }
+}
+
+void rwa2::Mouse::update_walls(const std::stack<std::array<int,2>> &node_stack, const int& m_direction){
+    char dir;
+    char left;
+    char right;
+    switch (m_direction)
+    {
+    case direction::NORTH:
+        dir = 'n';
+        break;
+    case direction::EAST:
+        dir = 'e';
+        break;
+    case direction::WEST:
+        dir = 'w';
+        break;
+    case direction::SOUTH:
+        dir = 's';
+        break;
+    // default:
+    //     break;
+    }
+    if(dir == 'n'){
+        left = 'w';
+        right = 'e';
+    }
+    else if(dir == 'e'){
+        left = 'n';
+        right = 's';
+    }
+    else if(dir == 's'){
+        left = 'e';
+        right = 'w';
+    }
+    else{
+        left = 's';
+        right = 'n';
+    }
+    
+
+        if(API::wallFront()){
+            API::setWall(node_stack.top().at(0),node_stack.top().at(1),dir);
+        }
+        if(API::wallLeft()){
+            API::setWall(node_stack.top().at(0),node_stack.top().at(1),left);
+        }
+        if(API::wallRight()){
+            API::setWall(node_stack.top().at(0),node_stack.top().at(1),right);
+        }
 }

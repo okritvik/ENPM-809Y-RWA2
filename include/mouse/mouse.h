@@ -114,7 +114,7 @@ namespace rwa2 {
         
         bool is_visited(std::array<std::array<int,16>,16> &visited_nodes, std::array<int,2> &next_node);
 
-         
+        void update_walls(const std::stack<std::array<int,2>>& node_stack, const int& m_direction);
 
 
 
