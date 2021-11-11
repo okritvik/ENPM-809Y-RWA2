@@ -114,7 +114,9 @@ namespace rwa2 {
         
         bool is_visited(std::array<std::array<int,16>,16> &visited_nodes, std::array<int,2> &next_node);
 
-        void update_walls(const std::stack<std::array<int,2>>& node_stack, const int& m_direction);
+        void update_walls(const int& m_x, const int& m_y, const int& m_direction);
+        
+        bool DFS(int l_x,int l_y);
 
 
 
@@ -127,6 +129,7 @@ namespace rwa2 {
         std::array<std::array<Node, m_maze_width>, m_maze_height> m_maze; //2D array maze object
         std::array<std::array<int,m_maze_width>,m_maze_height> visited_nodes;
         std::stack<std::array<int,2>> node_stack;
+        std::stack<std::array<int,2>> final_path;
         std::array<int,2> curr_node;
         std::array<int,2> top_node;
         std::array<int,2> next_node;

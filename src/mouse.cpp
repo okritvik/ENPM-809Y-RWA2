@@ -5,7 +5,7 @@
 // #include <iterator>
 
 
-void move_to_prev_node(const std::array<int,2>& top_node,const std::array<int,2>& curr_node, int& m_direction);
+bool move_to_prev_node(const std::array<int,2>& top_node,const std::array<int,2>& curr_node, int& m_direction);
 
 
 void rwa2::Mouse::move_forward(){
@@ -321,76 +321,238 @@ bool rwa2::Mouse::turn_back(){
 
 //NEWLY WRITTEN FUNCTION
 
+// bool rwa2::Mouse::search_maze(){
+//     if(m_x != 8 || m_y != 7){
+//         if(node_stack.empty()){
+//             // curr_node.at(0) = m_x;
+//             // curr_node.at(1) = m_y;
+//             node_stack.push(curr_node);
+//             API::setColor(node_stack.top().at(0),node_stack.top().at(1),'g');
+//             std::cerr << "Pushed to stack: " << curr_node.at(0) <<", " << curr_node.at(1) << "\n";
+//             (visited_nodes.at(m_y)).at(m_x) = 1;
+//         }
+//     }
+//     else{
+//         return true;
+//     }
+//     if((!API::wallFront()) && (update_next_node(m_direction,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
+//         update_walls(node_stack,m_direction);
+//         node_stack.push(next_node);
+//         API::setColor(node_stack.top().at(0),node_stack.top().at(1),'g');
+//         (visited_nodes.at(next_node.at(1))).at(next_node.at(0)) = 1;
+//         // curr_node.at(0) = next_node.at(0);
+//         // curr_node.at(1) = next_node.at(1);
+//         // m_x = curr_node.at(0);
+//         // m_y = curr_node.at(1);
+        
+//         move_forward();
+//     }
+//     else if((!API::wallRight()) && (update_next_node((m_direction+1)%4,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
+//         update_walls(node_stack,m_direction);
+//         node_stack.push(next_node);
+//         API::setColor(node_stack.top().at(0),node_stack.top().at(1),'g');
+//         (visited_nodes.at(next_node.at(1))).at(next_node.at(0)) = 1;
+//         // curr_node.at(0) = next_node.at(0);
+//         // curr_node.at(1) = next_node.at(1);
+//         // m_x = curr_node.at(0);
+//         // m_y = curr_node.at(1);
+        
+//         turn_right();
+//         move_forward();
+//     }
+//     else if((!API::wallLeft()) && (update_next_node((m_direction+3)%4,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
+//         update_walls(node_stack,m_direction);
+//         node_stack.push(next_node);
+//         API::setColor(node_stack.top().at(0),node_stack.top().at(1),'g');
+//         (visited_nodes.at(next_node.at(1))).at(next_node.at(0)) = 1;
+//         turn_left();
+//         move_forward();
+//     }
+//     // else if((turn_back()) && (!API::wallFront()) && (update_next_node((m_direction+2)%4,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
+//     //     node_stack.push(next_node);
+//     //     (visited_nodes.at(next_node.at(1))).at(next_node.at(0)) = 1;
+//     //     // curr_node.at(0) = next_node.at(0);
+//     //     // curr_node.at(1) = next_node.at(1);
+//     //     // m_x = curr_node.at(0);
+//     //     // m_y = curr_node.at(1);
+//     //     move_forward();
+//     // }
+    
+//     else{
+//         if(!node_stack.empty()){
+//             API::setColor(node_stack.top().at(0),node_stack.top().at(1),'a');
+//             update_walls(node_stack,m_direction);
+//             std::cerr << "Popped from stack: "<<node_stack.top().at(0)<<", "<<node_stack.top().at(1) << "\n";
+//             node_stack.pop();
+//             top_node = node_stack.top();
+//             move_to_prev_node(top_node,curr_node,m_direction);
+//             // curr_node.at(0) = top_node.at(0);
+//             // curr_node.at(1) = top_node.at(1);
+//             // next_node.at(0) = curr_node.at(0);
+//             // next_node.at(1) = curr_node.at(1);
+//             // //search_maze();
+//         }
+//         else{
+//             return false;
+//         }
+//     }
+//     std::cerr << "Pushed to stack: "<<next_node.at(0)<<", "<<next_node.at(1) << "\n";
+//     if(!node_stack.empty()){
+//         // top_node = node_stack.top();
+//         // //move_to_prev_node(top_node,curr_node,m_direction);
+//         // curr_node.at(0) = top_node.at(0);
+//         // curr_node.at(1) = top_node.at(1);
+//         // m_x = curr_node.at(0);
+//         // m_y = curr_node.at(1);
+//         top_node = node_stack.top();
+        
+//         curr_node.at(0) = top_node.at(0);
+//         curr_node.at(1) = top_node.at(1);
+//         std::cerr << "Curr_x: " << curr_node.at(0) << " Curr_y: " << curr_node.at(1) <<"\n";
+//         m_x = curr_node.at(0);
+//         m_y = curr_node.at(1);
+//         search_maze();
+//     }
+//     else{
+//         return false;
+//     }
+    
+// }
 bool rwa2::Mouse::search_maze(){
-    if(m_x != 8 || m_y != 7){
+    while (DFS(m_x,m_y)){
+        bool next_node_flag = false;
+        int size = node_stack.size();
+        if(size == 0){
+            return false;
+        }
+        std::cerr << "Clearing the final path stack\n";
+        for(int i=0; i<final_path.size();i++){
+            final_path.pop();
+        }
+        
+        std::cerr << "Reversing the found stack\n";
+        for(int i=0;i<size;i++){
+            final_path.push(node_stack.top());
+            std::cerr << "Popping from nodestack "<<node_stack.top().at(0) << " "<< node_stack.top().at(1) <<"\n";
+            node_stack.pop();
+        }
+        std::cerr << "Bot movements starts\n";
+        while(true){
+            bool flag = false;
+            if(m_direction == direction::SOUTH){
+                if(API::wallFront()){
+                    m_maze.at(m_x).at(m_y).set_wall(m_direction,true);
+                    update_walls(m_x,m_y,m_direction);
+                }
+                turn_back();
+            }
+            else if(m_direction == direction::EAST){
+                if(API::wallRight()){
+                    m_maze.at(m_x).at(m_y).set_wall((m_direction+1),true);
+                    update_walls(m_x,m_y,(m_direction+1)%4);
+                }
+                turn_left();
+            }
+            else if(m_direction == direction::WEST){
+                if(API::wallLeft()){
+                    m_maze.at(m_x).at(m_y).set_wall((m_direction-1),true);
+                    update_walls(m_x,m_y,(m_direction-1));
+                }
+                turn_right();
+            }
+            if(API::wallFront()){
+                if(m_maze.at(m_x).at(m_y).is_wall(m_direction)){
+                    flag = false;
+                }
+                else{
+                    m_maze.at(m_x).at(m_y).set_wall(m_direction,true);
+                    update_walls(m_x,m_y,m_direction);
+                    flag = true;
+                }
+            }
+            if(API::wallRight()){
+                m_maze.at(m_x).at(m_y).set_wall((m_direction+1)%4,true);
+                update_walls(m_x,m_y,(m_direction+1)%4);
+            }
+            if(API::wallLeft()){
+                m_maze.at(m_x).at(m_y).set_wall((m_direction+3)%4,true);
+                update_walls(m_x,m_y,(m_direction+3)%4);
+            }
+            if(flag){
+                break;
+            }
+            std::cerr << "X and Y of path stack: "  << final_path.top().at(0) << " " << final_path.top().at(1) << "\n";
+            curr_node = final_path.top();
+            if((curr_node.at(0) == 8) && (curr_node.at(1)==7)){
+                return true;
+            }
+            final_path.pop();
+            std::cerr << "Next X and Y of path stack: "  << final_path.top().at(0) << " " << final_path.top().at(1) << "\n";
+            next_node = final_path.top();
+            m_x = next_node.at(0);
+            m_y = next_node.at(1);
+            if(!move_to_prev_node(next_node,curr_node,m_direction)){
+                next_node_flag = true;
+                break;
+            }    
+        }
+        // if((final_path.size()-1)!=0){
+        //     final_path.pop();    
+        // }
+        if(next_node_flag){
+            m_x = curr_node.at(0);
+            m_y = curr_node.at(1);
+        }
+        else{
+            m_x = final_path.top().at(0);
+            m_y = final_path.top().at(1);
+        }
+        if((m_x == 8) && (m_y == 7)){
+            return true;
+        }
+        visited_nodes = {0};
+        std::cerr << "Passing the x and y: " << m_x << " " << m_y << "\n";
+    }
+    return false;
+}
+
+bool rwa2::Mouse::DFS(int l_x,int l_y){
+    if(l_x != 8 || l_y != 7){
         if(node_stack.empty()){
-            // curr_node.at(0) = m_x;
-            // curr_node.at(1) = m_y;
+            curr_node.at(0) = l_x;
+            curr_node.at(1) = l_y;
             node_stack.push(curr_node);
-            API::setColor(node_stack.top().at(0),node_stack.top().at(1),'g');
+            //API::setColor(node_stack.top().at(0),node_stack.top().at(1),'g');
             std::cerr << "Pushed to stack: " << curr_node.at(0) <<", " << curr_node.at(1) << "\n";
-            (visited_nodes.at(m_y)).at(m_x) = 1;
+            (visited_nodes.at(l_y)).at(l_x) = 1;
         }
     }
     else{
+        std::cerr << "NODE STACK SIZE BEFORE POPPING IS: "<< node_stack.size() << "\n";
         return true;
     }
-    if((!API::wallFront()) && (update_next_node(m_direction,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
-        update_walls(node_stack,m_direction);
+    if(!(m_maze.at(l_x).at(l_y).is_wall(direction::NORTH)) && (update_next_node(direction::NORTH,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
+        //std::cerr << m_maze.at(l_x).at(l_y).is_wall(direction::NORTH) << "\n";
         node_stack.push(next_node);
-        API::setColor(node_stack.top().at(0),node_stack.top().at(1),'g');
         (visited_nodes.at(next_node.at(1))).at(next_node.at(0)) = 1;
-        // curr_node.at(0) = next_node.at(0);
-        // curr_node.at(1) = next_node.at(1);
-        // m_x = curr_node.at(0);
-        // m_y = curr_node.at(1);
-        
-        move_forward();
     }
-    else if((!API::wallRight()) && (update_next_node((m_direction+1)%4,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
-        update_walls(node_stack,m_direction);
+    else if(!(m_maze.at(l_x).at(l_y).is_wall(direction::EAST)) && (update_next_node(direction::EAST,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
         node_stack.push(next_node);
-        API::setColor(node_stack.top().at(0),node_stack.top().at(1),'g');
         (visited_nodes.at(next_node.at(1))).at(next_node.at(0)) = 1;
-        // curr_node.at(0) = next_node.at(0);
-        // curr_node.at(1) = next_node.at(1);
-        // m_x = curr_node.at(0);
-        // m_y = curr_node.at(1);
-        
-        turn_right();
-        move_forward();
     }
-    else if((!API::wallLeft()) && (update_next_node((m_direction+3)%4,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
-        update_walls(node_stack,m_direction);
+    else if(!(m_maze.at(l_x).at(l_y).is_wall(direction::SOUTH)) && (update_next_node(direction::SOUTH,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
         node_stack.push(next_node);
-        API::setColor(node_stack.top().at(0),node_stack.top().at(1),'g');
         (visited_nodes.at(next_node.at(1))).at(next_node.at(0)) = 1;
-        turn_left();
-        move_forward();
     }
-    // else if((turn_back()) && (!API::wallFront()) && (update_next_node((m_direction+2)%4,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
-    //     node_stack.push(next_node);
-    //     (visited_nodes.at(next_node.at(1))).at(next_node.at(0)) = 1;
-    //     // curr_node.at(0) = next_node.at(0);
-    //     // curr_node.at(1) = next_node.at(1);
-    //     // m_x = curr_node.at(0);
-    //     // m_y = curr_node.at(1);
-    //     move_forward();
-    // }
-    
+    else if(!(m_maze.at(l_x).at(l_y).is_wall(direction::WEST)) && (update_next_node(direction::WEST,next_node,curr_node) && (!is_visited(visited_nodes,next_node)))){
+        node_stack.push(next_node);
+        (visited_nodes.at(next_node.at(1))).at(next_node.at(0)) = 1;
+    }
     else{
         if(!node_stack.empty()){
-            API::setColor(node_stack.top().at(0),node_stack.top().at(1),'a');
-            update_walls(node_stack,m_direction);
             std::cerr << "Popped from stack: "<<node_stack.top().at(0)<<", "<<node_stack.top().at(1) << "\n";
             node_stack.pop();
-            top_node = node_stack.top();
-            move_to_prev_node(top_node,curr_node,m_direction);
-            // curr_node.at(0) = top_node.at(0);
-            // curr_node.at(1) = top_node.at(1);
-            // next_node.at(0) = curr_node.at(0);
-            // next_node.at(1) = curr_node.at(1);
-            // //search_maze();
+            // top_node = node_stack.top();
         }
         else{
             return false;
@@ -398,25 +560,15 @@ bool rwa2::Mouse::search_maze(){
     }
     std::cerr << "Pushed to stack: "<<next_node.at(0)<<", "<<next_node.at(1) << "\n";
     if(!node_stack.empty()){
-        // top_node = node_stack.top();
-        // //move_to_prev_node(top_node,curr_node,m_direction);
-        // curr_node.at(0) = top_node.at(0);
-        // curr_node.at(1) = top_node.at(1);
-        // m_x = curr_node.at(0);
-        // m_y = curr_node.at(1);
         top_node = node_stack.top();
-        
         curr_node.at(0) = top_node.at(0);
         curr_node.at(1) = top_node.at(1);
         std::cerr << "Curr_x: " << curr_node.at(0) << " Curr_y: " << curr_node.at(1) <<"\n";
-        m_x = curr_node.at(0);
-        m_y = curr_node.at(1);
-        search_maze();
+        DFS(curr_node.at(0),curr_node.at(1));
     }
     else{
         return false;
     }
-    
 }
 
 
@@ -477,99 +629,175 @@ bool rwa2::Mouse::update_next_node(const int& dir,std::array<int,2>& next_node, 
     return true;
 }
 
-void move_to_prev_node(const std::array<int,2>& top_node,const std::array<int,2>& curr_node, int& m_direction){
+bool move_to_prev_node(const std::array<int,2>& top_node,const std::array<int,2>& curr_node, int& m_direction){
     if(top_node.at(0)-curr_node.at(0) > 0){
         if(m_direction == direction::EAST){
+            if(API::wallFront()){
+                return false;
+            }
             API::moveForward();
         }
         else if(m_direction == direction::SOUTH){
             API::turnLeft();
-            API::moveForward();
             m_direction = (m_direction+3)%4;
+            if(API::wallFront()){
+                return false;
+            }
+            
+            API::moveForward();
+            
         }
         else if(m_direction == direction::NORTH){
             API::turnRight();
-            API::moveForward();
             m_direction = (m_direction+1)%4;
+            if(API::wallFront()){
+                return false;
+            }
+            
+            API::moveForward();
+            
         }
         else if(m_direction == direction::WEST){
             API::turnRight();
             API::turnRight();
-            API::moveForward();
             m_direction = (m_direction+2)%4;
+            if(API::wallFront()){
+                return false;
+            }
+            
+            API::moveForward();
+            
         }
     }
     else if(top_node.at(0)-curr_node.at(0) < 0){
         if(m_direction == direction::EAST){
             API::turnRight();
             API::turnRight();
-            API::moveForward();
             m_direction = (m_direction+2)%4;
+            if(API::wallFront()){
+                return false;
+            }
+            
+            API::moveForward();
+            
             
         }
         else if(m_direction == direction::SOUTH){
             API::turnRight();
-            API::moveForward();
             m_direction = (m_direction+1)%4;
+            if(API::wallFront()){
+                return false;
+            }
+            
+            API::moveForward();
+            
         }
         else if(m_direction == direction::NORTH){
             API::turnLeft();
-            API::moveForward();
             m_direction = (m_direction+3)%4;
+            if(API::wallFront()){
+                return false;
+            }
+            
+            API::moveForward();
+            
             
         }
         else if(m_direction == direction::WEST){
+            if(API::wallFront()){
+                return false;
+            }
+            
             API::moveForward();
         }
     }
     else if(top_node.at(1)-curr_node.at(1) > 0){
         if(m_direction == direction::EAST){
             API::turnLeft();
-            API::moveForward();
             m_direction = (m_direction+3)%4;
+            if(API::wallFront()){
+                return false;
+            }
+            
+            API::moveForward();
+            
             
         }
         else if(m_direction == direction::SOUTH){
             API::turnRight();
             API::turnRight();
-            API::moveForward();
             m_direction = (m_direction+2)%4;
+            if(API::wallFront()){
+                return false;
+            }
+            
+            API::moveForward();
+            
         }
         else if(m_direction == direction::NORTH){
+            if(API::wallFront()){
+                return false;
+            }
+            
             API::moveForward();
             
             
         }
         else if(m_direction == direction::WEST){
             API::turnRight();
-            API::moveForward();
             m_direction = (m_direction+1)%4;
+            if(API::wallFront()){
+                return false;
+            }
+            
+            API::moveForward();
+            
         }
     }
     else if(top_node.at(1)-curr_node.at(1) < 0){
         if(m_direction == direction::EAST){
             API::turnRight();
-            API::moveForward();
             m_direction = (m_direction+1)%4;
+            if(API::wallFront()){
+                return false;
+            }
+            
+            API::moveForward();
+            
         }
         else if(m_direction == direction::SOUTH){
+            if(API::wallFront()){
+                return false;
+            }
+            
             API::moveForward();
         }
         else if(m_direction == direction::NORTH){
             API::turnRight();
             API::turnRight();
+            m_direction = (m_direction+2)%4;
+            if(API::wallFront()){
+                return false;
+            }
+            
             API::moveForward();
-            m_direction = (m_direction+2)%4;  
+             
         }
         else if(m_direction == direction::WEST){
             API::turnLeft();
-            API::moveForward();
             m_direction = (m_direction+3)%4;
+            if(API::wallFront()){
+                return false;
+            }
+            
+            API::moveForward();
+            
         }
     }
+    return true;
 }
 
-void rwa2::Mouse::update_walls(const std::stack<std::array<int,2>> &node_stack, const int& m_direction){
+void rwa2::Mouse::update_walls(const int& m_x, const int& m_y, const int& m_direction){
     char dir;
     char left;
     char right;
@@ -609,12 +837,12 @@ void rwa2::Mouse::update_walls(const std::stack<std::array<int,2>> &node_stack, 
     
 
         if(API::wallFront()){
-            API::setWall(node_stack.top().at(0),node_stack.top().at(1),dir);
+            API::setWall(m_x,m_y,dir);
         }
         if(API::wallLeft()){
-            API::setWall(node_stack.top().at(0),node_stack.top().at(1),left);
+            API::setWall(m_x,m_y,dir);
         }
         if(API::wallRight()){
-            API::setWall(node_stack.top().at(0),node_stack.top().at(1),right);
+            API::setWall(m_x,m_y,dir);
         }
 }
