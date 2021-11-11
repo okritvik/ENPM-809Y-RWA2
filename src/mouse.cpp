@@ -419,6 +419,7 @@ bool rwa2::Mouse::turn_back(){
     
 // }
 bool rwa2::Mouse::search_maze(){
+    
     while (DFS(m_x,m_y)){
         bool next_node_flag = false;
         int size = node_stack.size();
@@ -433,6 +434,9 @@ bool rwa2::Mouse::search_maze(){
         std::cerr << "Reversing the found stack\n";
         for(int i=0;i<size;i++){
             final_path.push(node_stack.top());
+            if(i != 0){
+                API::setColor(node_stack.top().at(0),node_stack.top().at(1),'g');
+            }
             std::cerr << "Popping from nodestack "<<node_stack.top().at(0) << " "<< node_stack.top().at(1) <<"\n";
             node_stack.pop();
         }
@@ -444,21 +448,42 @@ bool rwa2::Mouse::search_maze(){
                     m_maze.at(m_x).at(m_y).set_wall(m_direction,true);
                     update_walls(m_x,m_y,m_direction);
                 }
-                turn_back();
+                if(API::wallLeft()){
+                    m_maze.at(m_x).at(m_y).set_wall(m_direction-1,true);
+                    update_walls(m_x,m_y,m_direction-1);
+                }
+                if(API::wallRight()){
+                    m_maze.at(m_x).at(m_y).set_wall(m_direction+1,true);
+                    update_walls(m_x,m_y,m_direction+1);
+                }
             }
             else if(m_direction == direction::EAST){
                 if(API::wallRight()){
                     m_maze.at(m_x).at(m_y).set_wall((m_direction+1),true);
                     update_walls(m_x,m_y,(m_direction+1)%4);
                 }
-                turn_left();
+                if(API::wallFront()){
+                    m_maze.at(m_x).at(m_y).set_wall(m_direction,true);
+                    update_walls(m_x,m_y,m_direction);
+                }
+                if(API::wallLeft()){
+                    m_maze.at(m_x).at(m_y).set_wall(m_direction-1,true);
+                    update_walls(m_x,m_y,m_direction-1);
+                }
             }
             else if(m_direction == direction::WEST){
                 if(API::wallLeft()){
                     m_maze.at(m_x).at(m_y).set_wall((m_direction-1),true);
                     update_walls(m_x,m_y,(m_direction-1));
                 }
-                turn_right();
+                if(API::wallFront()){
+                    m_maze.at(m_x).at(m_y).set_wall(m_direction,true);
+                    update_walls(m_x,m_y,m_direction);
+                }
+                if(API::wallRight()){
+                    m_maze.at(m_x).at(m_y).set_wall((m_direction+1)%4,true);
+                    update_walls(m_x,m_y,(m_direction+1)%4);
+                }
             }
             if(API::wallFront()){
                 if(m_maze.at(m_x).at(m_y).is_wall(m_direction)){
@@ -517,6 +542,7 @@ bool rwa2::Mouse::search_maze(){
 }
 
 bool rwa2::Mouse::DFS(int l_x,int l_y){
+    API::clearAllColor();
     if(l_x != 8 || l_y != 7){
         if(node_stack.empty()){
             curr_node.at(0) = l_x;

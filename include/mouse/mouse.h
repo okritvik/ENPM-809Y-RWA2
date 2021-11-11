@@ -133,6 +133,7 @@ namespace rwa2 {
         std::array<int,2> curr_node;
         std::array<int,2> top_node;
         std::array<int,2> next_node;
+        std::array<int,2> goal_node;
     };
 }
 #endif
