@@ -39,11 +39,14 @@
 
 #include "../node/node.h"
 #include "../util/util.h"
+#include "../api/api.h"  
 #include <array>
 #include <vector>
 #include <stack>
 #include <algorithm>
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 
 namespace rwa2 {
     /**
@@ -57,34 +60,45 @@ namespace rwa2 {
          * @brief Construct a new MicroMouse object
          *
          * The robot is always at (0,0) and facing NORTH when the simulator starts
+         * Initializing the current node, top node, next node
+         * Initializing a random number between {7,8} to the goal node coordinates
+         * 
          */
         Mouse() :m_x{ 0 }, m_y{ 0 }, m_direction{ direction::NORTH } {
             //initialize the maze by placing around the perimeter of the maze
             for (int x = 0; x < m_maze_width; x += 1) {
                 for (int y = 0; y < m_maze_height; y += 1) {
-                    visited_nodes.at(x).at(y)=0;
+                    m_visited_nodes.at(x).at(y)=false;
                     m_maze.at(x).at(y).set_wall(direction::NORTH, (y == m_maze_height - 1));
                     m_maze.at(x).at(y).set_wall(direction::EAST, (x == m_maze_width - 1));
                     m_maze.at(x).at(y).set_wall(direction::SOUTH, (y == 0));
                     m_maze.at(x).at(y).set_wall(direction::WEST, (x == 0));
                 }
             }
-            curr_node.at(0) = m_x;
-            curr_node.at(1) = m_y;
-            top_node.at(0) = m_x;
-            top_node.at(1) = m_y;
-            next_node.at(0) = m_x;
-            next_node.at(1) = m_y;
+            m_curr_node.at(0) = m_x;
+            m_curr_node.at(1) = m_y;
+            m_top_node.at(0) = m_x;
+            m_top_node.at(1) = m_y;
+            m_next_node.at(0) = m_x;
+            m_next_node.at(1) = m_y;
+            srand(time(0));
+            m_goal_node.at(0) = (rand()%2)+7;
+            m_goal_node.at(1) = (rand()%2)+7;
+            std::cerr << "Goal Nodes: " << m_goal_node.at(0) << " " << m_goal_node.at(1) << "\n";
         }
-        // this method visually sets the walls in the simulator
+
+        /**
+         * @brief this method visually sets the walls in the simulator
+         * 
+         */
         void display_walls();
         
         //IMPLEMENT THE METHODS BELOW
 
         //Note: Come up with your own parameters and implementations
         /**
-         * @brief Implement DFS to compute a path between 2 nodes in a maze
-         *
+         * @brief Implement DFS to compute a path between 2 nodes in a maze. This function calls DFS function internally to compute the path from present node
+         * 
          * @return true A path is found
          * @return false A path is not found
          */
@@ -108,15 +122,54 @@ namespace rwa2 {
          */
         void turn_right();
 
+        /**
+         * @brief turns 180 deg
+         * 
+         * @return true after turning back
+         */
         bool turn_back();
-        
-        bool update_next_node(const int& dir,std::array<int,2>& next_node, const std::array<int,2>& curr_node);
-        
-        bool is_visited(std::array<std::array<int,16>,16> &visited_nodes, std::array<int,2> &next_node);
 
-        void update_walls(const int& m_x, const int& m_y, const int& m_direction);
+        /**
+         * @brief This function calculates the next node from the present node depending on the direction
+         * 
+         * @param dir direction to which next node should be calculated
+         * @param m_next_node next node to be updated
+         * @param m_curr_node present node
+         * @return true after updating the next node successfully
+         */
+        bool update_next_node(const int& dir,std::array<int,2>& m_next_node, const std::array<int,2>& m_curr_node);
         
+        /**
+         * @brief This function returns if the node is in the visited array or not
+         * 
+         * @param m_visited_nodes array of visited nodes
+         * @param m_next_node node that has to be checked in the visited array
+         * @return true if the node is already visited
+         * @return false if the node is not visited
+         */
+        bool is_visited(std::array<std::array<bool,16>,16> &m_visited_nodes, std::array<int,2> &m_next_node);
+        
+        /**
+         * @brief This function computes the path from the mouse's current position to the goal. It is called in the search_maze() function. This DFS() function is recursive and accounts for backtracking.
+         * 
+         * @param l_x local x index from which the DFS has to be computed to reach the goal
+         * @param l_y local y index from which the DFS has to be computed to reach the goal
+         * @return true if there is a path found from the (l_x, l_y) node to the goal node
+         * @return false if there is no path found from the present node to the goal node
+         */
         bool DFS(int l_x,int l_y);
+
+        /**
+         * @brief moving the mouse to the next node if there is no wall in between the current node and the next node.
+         * 
+         * @param m_top_node the node which is next in the stack
+         * @param m_curr_node present node of the mouse
+         * @param m_direction direction to which the mouse has to travel
+         * @return true if the mouse moves successfully to the next node 
+         * @return false if the mouse can't move to the next node.
+         */
+        
+        bool move_to_next_node(const std::array<int,2>& m_top_node,const std::array<int,2>& m_curr_node, int& m_direction);
 
 
 
@@ -127,13 +180,13 @@ namespace rwa2 {
         int m_y; //y position of the robot in the maze
         int m_direction; //direction of the robot in the maze
         std::array<std::array<Node, m_maze_width>, m_maze_height> m_maze; //2D array maze object
-        std::array<std::array<int,m_maze_width>,m_maze_height> visited_nodes;
-        std::stack<std::array<int,2>> node_stack;
-        std::stack<std::array<int,2>> final_path;
-        std::array<int,2> curr_node;
-        std::array<int,2> top_node;
-        std::array<int,2> next_node;
-        std::array<int,2> goal_node;
+        std::array<std::array<bool,m_maze_width>,m_maze_height> m_visited_nodes; //2D array of visited nodes
+        std::stack<std::array<int,2>> m_node_stack; // this stack contains the path computed by the DFS function
+        std::stack<std::array<int,2>> m_final_path; // this stack is reverse of the m_node_stack (for moving the mouse in the computed path)
+        std::array<int,2> m_curr_node;  // current node of the mouse
+        std::array<int,2> m_top_node; // top_node of the stack
+        std::array<int,2> m_next_node; // top_node of the stack
+        std::array<int,2> m_goal_node; // goal node which is set randomly using the srand() and rand() functions
     };
 }
 #endif
