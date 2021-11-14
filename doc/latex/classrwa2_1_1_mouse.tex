@@ -1,0 +1,204 @@
+\hypertarget{classrwa2_1_1_mouse}{}\section{rwa2\+:\+:Mouse Class Reference}
+\label{classrwa2_1_1_mouse}\index{rwa2\+::\+Mouse@{rwa2\+::\+Mouse}}
+
+
+This class is used to compute a path and execute the path.  
+
+
+
+
+{\ttfamily \#include $<$mouse.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrwa2_1_1_mouse_a048dffae3aaa3a6ddc2c6cc4741a097c}{Mouse} ()
+\begin{DoxyCompactList}\small\item\em Construct a new Micro\+Mouse object. \end{DoxyCompactList}\item 
+void \hyperlink{classrwa2_1_1_mouse_abbcc99c41fd073426fdfd790f947956e}{display\+\_\+walls} ()
+\begin{DoxyCompactList}\small\item\em this method visually sets the walls in the simulator \end{DoxyCompactList}\item 
+bool \hyperlink{classrwa2_1_1_mouse_a789be287a432bafc903c97396a014d7d}{search\+\_\+maze} ()
+\begin{DoxyCompactList}\small\item\em Implement Depth First Search (D\+FS) algortihm to compute a path between 2 nodes in a maze. This function calls the D\+FS function recursively to compute the path from present node. \end{DoxyCompactList}\item 
+void \hyperlink{classrwa2_1_1_mouse_afc6e0d56e3a777c05efa3929eb256e0a}{move\+\_\+forward} ()
+\begin{DoxyCompactList}\small\item\em Makes the mouse to move forward by 1 node. \end{DoxyCompactList}\item 
+void \hyperlink{classrwa2_1_1_mouse_a5748e94e740432c334d15364fb476919}{turn\+\_\+left} ()
+\begin{DoxyCompactList}\small\item\em Makes the mouse rotate 90 deg C\+CW. \end{DoxyCompactList}\item 
+void \hyperlink{classrwa2_1_1_mouse_ac929127d86fc4a41d1e216968b1dae20}{turn\+\_\+right} ()
+\begin{DoxyCompactList}\small\item\em Makes the mouse rotate 90 deg CW. \end{DoxyCompactList}\item 
+bool \hyperlink{classrwa2_1_1_mouse_a63207988e700b8d4c2ed6485acc0f784}{update\+\_\+next\+\_\+node} (const int \&dir, std\+::array$<$ int, 2 $>$ \&m\+\_\+next\+\_\+node, const std\+::array$<$ int, 2 $>$ \&m\+\_\+curr\+\_\+node)
+\begin{DoxyCompactList}\small\item\em This function calculates the next node from the present node depending on the direction. \end{DoxyCompactList}\item 
+bool \hyperlink{classrwa2_1_1_mouse_affc9c085e88aa2dbf07df41bc0596473}{is\+\_\+visited} (std\+::array$<$ std\+::array$<$ bool, 16 $>$, 16 $>$ \&m\+\_\+visited\+\_\+nodes, std\+::array$<$ int, 2 $>$ \&m\+\_\+next\+\_\+node)
+\begin{DoxyCompactList}\small\item\em This function checks if the next node is in the visited nodes array or not. \end{DoxyCompactList}\item 
+bool \hyperlink{classrwa2_1_1_mouse_a2f92de0dcd37dd4c47cc4bbda15dd81d}{depth\+\_\+first\+\_\+search} (int l\+\_\+x, int l\+\_\+y)
+\begin{DoxyCompactList}\small\item\em This function computes the path from the mouse\textquotesingle{}s current position to the goal recursively using the Depth First Search algorithm. It is called in the \hyperlink{classrwa2_1_1_mouse_a789be287a432bafc903c97396a014d7d}{search\+\_\+maze()} function and accounts for backtracking. \end{DoxyCompactList}\item 
+bool \hyperlink{classrwa2_1_1_mouse_ab560dba145a772d07698a7b53de2a70b}{move\+\_\+to\+\_\+next\+\_\+node} (const std\+::array$<$ int, 2 $>$ \&m\+\_\+top\+\_\+node, const std\+::array$<$ int, 2 $>$ \&m\+\_\+curr\+\_\+node, int \&m\+\_\+direction)
+\begin{DoxyCompactList}\small\item\em This function moves the mouse to the next node if there is no wall in between the current node and the next node. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This class is used to compute a path and execute the path. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classrwa2_1_1_mouse_a048dffae3aaa3a6ddc2c6cc4741a097c}\label{classrwa2_1_1_mouse_a048dffae3aaa3a6ddc2c6cc4741a097c}} 
+\index{rwa2\+::\+Mouse@{rwa2\+::\+Mouse}!Mouse@{Mouse}}
+\index{Mouse@{Mouse}!rwa2\+::\+Mouse@{rwa2\+::\+Mouse}}
+\subsubsection{\texorpdfstring{Mouse()}{Mouse()}}
+{\footnotesize\ttfamily rwa2\+::\+Mouse\+::\+Mouse (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Construct a new Micro\+Mouse object. 
+
+The robot is always at (0,0) and facing N\+O\+R\+TH when the simulator starts Initializing the current node, top node and next node of the maze Initializing a random number between \{7,8\} to the goal node coordinates 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classrwa2_1_1_mouse_a2f92de0dcd37dd4c47cc4bbda15dd81d}\label{classrwa2_1_1_mouse_a2f92de0dcd37dd4c47cc4bbda15dd81d}} 
+\index{rwa2\+::\+Mouse@{rwa2\+::\+Mouse}!depth\+\_\+first\+\_\+search@{depth\+\_\+first\+\_\+search}}
+\index{depth\+\_\+first\+\_\+search@{depth\+\_\+first\+\_\+search}!rwa2\+::\+Mouse@{rwa2\+::\+Mouse}}
+\subsubsection{\texorpdfstring{depth\+\_\+first\+\_\+search()}{depth\_first\_search()}}
+{\footnotesize\ttfamily bool rwa2\+::\+Mouse\+::depth\+\_\+first\+\_\+search (\begin{DoxyParamCaption}\item[{int}]{l\+\_\+x,  }\item[{int}]{l\+\_\+y }\end{DoxyParamCaption})}
+
+
+
+This function computes the path from the mouse\textquotesingle{}s current position to the goal recursively using the Depth First Search algorithm. It is called in the \hyperlink{classrwa2_1_1_mouse_a789be287a432bafc903c97396a014d7d}{search\+\_\+maze()} function and accounts for backtracking. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em l\+\_\+x} & integer Local x index from which the D\+FS has to be computed to reach the goal \\
+\hline
+{\em l\+\_\+y} & integer Local y index from which the D\+FS has to be computed to reach the goal \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true If there is a path found from the (l\+\_\+x, l\+\_\+y) node to the goal node 
+
+false If there is no path found from the (l\+\_\+x, l\+\_\+y) node to the goal node 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classrwa2_1_1_mouse_abbcc99c41fd073426fdfd790f947956e}\label{classrwa2_1_1_mouse_abbcc99c41fd073426fdfd790f947956e}} 
+\index{rwa2\+::\+Mouse@{rwa2\+::\+Mouse}!display\+\_\+walls@{display\+\_\+walls}}
+\index{display\+\_\+walls@{display\+\_\+walls}!rwa2\+::\+Mouse@{rwa2\+::\+Mouse}}
+\subsubsection{\texorpdfstring{display\+\_\+walls()}{display\_walls()}}
+{\footnotesize\ttfamily void rwa2\+::\+Mouse\+::display\+\_\+walls (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+this method visually sets the walls in the simulator 
+
+\mbox{\Hypertarget{classrwa2_1_1_mouse_affc9c085e88aa2dbf07df41bc0596473}\label{classrwa2_1_1_mouse_affc9c085e88aa2dbf07df41bc0596473}} 
+\index{rwa2\+::\+Mouse@{rwa2\+::\+Mouse}!is\+\_\+visited@{is\+\_\+visited}}
+\index{is\+\_\+visited@{is\+\_\+visited}!rwa2\+::\+Mouse@{rwa2\+::\+Mouse}}
+\subsubsection{\texorpdfstring{is\+\_\+visited()}{is\_visited()}}
+{\footnotesize\ttfamily bool rwa2\+::\+Mouse\+::is\+\_\+visited (\begin{DoxyParamCaption}\item[{std\+::array$<$ std\+::array$<$ bool, 16 $>$, 16 $>$ \&}]{m\+\_\+visited\+\_\+nodes,  }\item[{std\+::array$<$ int, 2 $>$ \&}]{m\+\_\+next\+\_\+node }\end{DoxyParamCaption})}
+
+
+
+This function checks if the next node is in the visited nodes array or not. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em m\+\_\+visited\+\_\+nodes} & 2D Array of boolean value correspoinding to already visited nodes \\
+\hline
+{\em m\+\_\+next\+\_\+node} & Array of next node coordinates that have to be checked \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true If the node has already been visited 
+
+false If the node has not been visited 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classrwa2_1_1_mouse_afc6e0d56e3a777c05efa3929eb256e0a}\label{classrwa2_1_1_mouse_afc6e0d56e3a777c05efa3929eb256e0a}} 
+\index{rwa2\+::\+Mouse@{rwa2\+::\+Mouse}!move\+\_\+forward@{move\+\_\+forward}}
+\index{move\+\_\+forward@{move\+\_\+forward}!rwa2\+::\+Mouse@{rwa2\+::\+Mouse}}
+\subsubsection{\texorpdfstring{move\+\_\+forward()}{move\_forward()}}
+{\footnotesize\ttfamily void rwa2\+::\+Mouse\+::move\+\_\+forward (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Makes the mouse to move forward by 1 node. 
+
+\mbox{\Hypertarget{classrwa2_1_1_mouse_ab560dba145a772d07698a7b53de2a70b}\label{classrwa2_1_1_mouse_ab560dba145a772d07698a7b53de2a70b}} 
+\index{rwa2\+::\+Mouse@{rwa2\+::\+Mouse}!move\+\_\+to\+\_\+next\+\_\+node@{move\+\_\+to\+\_\+next\+\_\+node}}
+\index{move\+\_\+to\+\_\+next\+\_\+node@{move\+\_\+to\+\_\+next\+\_\+node}!rwa2\+::\+Mouse@{rwa2\+::\+Mouse}}
+\subsubsection{\texorpdfstring{move\+\_\+to\+\_\+next\+\_\+node()}{move\_to\_next\_node()}}
+{\footnotesize\ttfamily bool rwa2\+::\+Mouse\+::move\+\_\+to\+\_\+next\+\_\+node (\begin{DoxyParamCaption}\item[{const std\+::array$<$ int, 2 $>$ \&}]{m\+\_\+top\+\_\+node,  }\item[{const std\+::array$<$ int, 2 $>$ \&}]{m\+\_\+curr\+\_\+node,  }\item[{int \&}]{m\+\_\+direction }\end{DoxyParamCaption})}
+
+
+
+This function moves the mouse to the next node if there is no wall in between the current node and the next node. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em m\+\_\+top\+\_\+node} & Array of the next node coordinates in the stack \\
+\hline
+{\em m\+\_\+curr\+\_\+node} & Array of present node coordinates of the mouse \\
+\hline
+{\em m\+\_\+direction} & integer Direction in which the mouse has to travel \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true If the mouse moves successfully to the next node 
+
+false If the mouse can\textquotesingle{}t move to the next node. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classrwa2_1_1_mouse_a789be287a432bafc903c97396a014d7d}\label{classrwa2_1_1_mouse_a789be287a432bafc903c97396a014d7d}} 
+\index{rwa2\+::\+Mouse@{rwa2\+::\+Mouse}!search\+\_\+maze@{search\+\_\+maze}}
+\index{search\+\_\+maze@{search\+\_\+maze}!rwa2\+::\+Mouse@{rwa2\+::\+Mouse}}
+\subsubsection{\texorpdfstring{search\+\_\+maze()}{search\_maze()}}
+{\footnotesize\ttfamily bool rwa2\+::\+Mouse\+::search\+\_\+maze (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Implement Depth First Search (D\+FS) algortihm to compute a path between 2 nodes in a maze. This function calls the D\+FS function recursively to compute the path from present node. 
+
+\begin{DoxyReturn}{Returns}
+true A path is found 
+
+false A path is not found 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classrwa2_1_1_mouse_a5748e94e740432c334d15364fb476919}\label{classrwa2_1_1_mouse_a5748e94e740432c334d15364fb476919}} 
+\index{rwa2\+::\+Mouse@{rwa2\+::\+Mouse}!turn\+\_\+left@{turn\+\_\+left}}
+\index{turn\+\_\+left@{turn\+\_\+left}!rwa2\+::\+Mouse@{rwa2\+::\+Mouse}}
+\subsubsection{\texorpdfstring{turn\+\_\+left()}{turn\_left()}}
+{\footnotesize\ttfamily void rwa2\+::\+Mouse\+::turn\+\_\+left (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Makes the mouse rotate 90 deg C\+CW. 
+
+\mbox{\Hypertarget{classrwa2_1_1_mouse_ac929127d86fc4a41d1e216968b1dae20}\label{classrwa2_1_1_mouse_ac929127d86fc4a41d1e216968b1dae20}} 
+\index{rwa2\+::\+Mouse@{rwa2\+::\+Mouse}!turn\+\_\+right@{turn\+\_\+right}}
+\index{turn\+\_\+right@{turn\+\_\+right}!rwa2\+::\+Mouse@{rwa2\+::\+Mouse}}
+\subsubsection{\texorpdfstring{turn\+\_\+right()}{turn\_right()}}
+{\footnotesize\ttfamily void rwa2\+::\+Mouse\+::turn\+\_\+right (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Makes the mouse rotate 90 deg CW. 
+
+\mbox{\Hypertarget{classrwa2_1_1_mouse_a63207988e700b8d4c2ed6485acc0f784}\label{classrwa2_1_1_mouse_a63207988e700b8d4c2ed6485acc0f784}} 
+\index{rwa2\+::\+Mouse@{rwa2\+::\+Mouse}!update\+\_\+next\+\_\+node@{update\+\_\+next\+\_\+node}}
+\index{update\+\_\+next\+\_\+node@{update\+\_\+next\+\_\+node}!rwa2\+::\+Mouse@{rwa2\+::\+Mouse}}
+\subsubsection{\texorpdfstring{update\+\_\+next\+\_\+node()}{update\_next\_node()}}
+{\footnotesize\ttfamily bool rwa2\+::\+Mouse\+::update\+\_\+next\+\_\+node (\begin{DoxyParamCaption}\item[{const int \&}]{dir,  }\item[{std\+::array$<$ int, 2 $>$ \&}]{m\+\_\+next\+\_\+node,  }\item[{const std\+::array$<$ int, 2 $>$ \&}]{m\+\_\+curr\+\_\+node }\end{DoxyParamCaption})}
+
+
+
+This function calculates the next node from the present node depending on the direction. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dir} & Direction with respect to which next node is calculated \\
+\hline
+{\em m\+\_\+next\+\_\+node} & Array of next node coordinates to be updated \\
+\hline
+{\em m\+\_\+curr\+\_\+node} & Array of present node coordinates \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true After updating the next node successfully 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/mouse/\hyperlink{mouse_8h}{mouse.\+h}\item 
+src/\hyperlink{mouse_8cpp}{mouse.\+cpp}\end{DoxyCompactItemize}
